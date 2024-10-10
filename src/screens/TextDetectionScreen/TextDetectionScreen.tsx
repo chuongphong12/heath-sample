@@ -1,5 +1,12 @@
-import React, {useRef, useState} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Image,
+  PermissionsAndroid,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import TextRecognition, {
   TextBlock,
   TextRecognitionScript,
@@ -11,8 +18,6 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import NutritionTable from './NutritionTable';
-import {Camera} from 'react-native-vision-camera';
-import CameraModal from './CameraModal';
 
 export type NutritionItem = {
   name: string;
@@ -21,11 +26,11 @@ export type NutritionItem = {
 };
 
 const TextDetectionScreen = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
 
   const [imageUri, setImageUri] = useState<string>();
   const [nutritionData, setNutritionData] = useState<any[]>([]);
-  const cameraRef = useRef<Camera>(null);
+  // const cameraRef = useRef<Camera>(null);
 
   const extractText = async (uri: string) => {
     const result = await TextRecognition.recognize(
@@ -84,8 +89,6 @@ const TextDetectionScreen = () => {
         });
       }
 
-      console.log(percentages);
-
       // Pair nutrients with their closest percentages
       nutrients.forEach(nutrient => {
         const closestPercentage = percentages.find(
@@ -107,19 +110,19 @@ const TextDetectionScreen = () => {
     });
   };
 
-  const detectText = async () => {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePhoto();
-
-      try {
-        setImageUri(photo.path);
-        await extractText(photo.path);
-        setModalVisible(!modalVisible);
-      } catch (error) {
-        console.error('Text recognition failed:', error);
-      }
-    }
-  };
+  // const detectText = async () => {
+  //   if (cameraRef.current) {
+  //     const photo = await cameraRef.current.takePhoto();
+  //
+  //     try {
+  //       setImageUri(photo.path);
+  //       await extractText(photo.path);
+  //       setModalVisible(!modalVisible);
+  //     } catch (error) {
+  //       console.error('Text recognition failed:', error);
+  //     }
+  //   }
+  // };
 
   const pickImage = async () => {
     console.log('working');
@@ -140,6 +143,7 @@ const TextDetectionScreen = () => {
   };
 
   const openCamera = async () => {
+    console.log('working');
     const options: CameraOptions = {
       saveToPhotos: false,
       mediaType: 'photo',
@@ -150,6 +154,7 @@ const TextDetectionScreen = () => {
       console.log('User cancelled camera');
     } else if (result.errorCode) {
       console.log('ImagePicker Error: ', result.errorCode);
+      console.log('ImagePicker Error: ', result.errorMessage);
     } else if (result && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri!;
       setImageUri(uri);
@@ -157,17 +162,50 @@ const TextDetectionScreen = () => {
     }
   };
 
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Camera permission given');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await requestCameraPermission();
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <CameraModal
-        modalVisible={modalVisible}
-        onDetect={detectText}
-        onClose={() => setModalVisible(!modalVisible)}
-        ref={cameraRef}
-      />
+      {/*<_CameraModal*/}
+      {/*  modalVisible={modalVisible}*/}
+      {/*  onDetect={detectText}*/}
+      {/*  onClose={() => setModalVisible(!modalVisible)}*/}
+      {/*  ref={cameraRef}*/}
+      {/*/>*/}
+      {/*<Pressable*/}
+      {/*  style={[styles.button, styles.buttonOpen]}*/}
+      {/*  onPress={() => setModalVisible(true)}>*/}
+      {/*  <Text style={styles.textStyle}>Start Detect</Text>*/}
+      {/*</Pressable>*/}
       <Pressable
         style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
+        onPress={openCamera}>
         <Text style={styles.textStyle}>Start Detect</Text>
       </Pressable>
       {imageUri && (

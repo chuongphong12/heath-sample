@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Platform, StyleSheet, View} from 'react-native';
 import {
   isSensorWorking,
   isStepCountingSupported,
@@ -12,7 +12,6 @@ import {
   getBodySensorPermission,
   getStepCounterPermission,
 } from '../../utils/permission';
-import RingProgress from './RingProgress';
 import Value from './Value';
 import LogCat from './LogCat';
 
@@ -97,53 +96,51 @@ function StepCounterScreen() {
   }, [granted, supported]);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.datePicker}>
-          {/*<CircularProgress*/}
-          {/*  value={stepCount}*/}
-          {/*  maxValue={10000}*/}
-          {/*  valueSuffix="steps"*/}
-          {/*  progressValueFontSize={42}*/}
-          {/*  radius={165}*/}
-          {/*  activeStrokeColor="#cdd27e"*/}
-          {/*  inActiveStrokeColor="#4c6394"*/}
-          {/*  inActiveStrokeOpacity={0.5}*/}
-          {/*  inActiveStrokeWidth={40}*/}
-          {/*  subtitle={*/}
-          {/*    additionalInfo.calories === '0 kCal'*/}
-          {/*      ? ''*/}
-          {/*      : additionalInfo.calories*/}
-          {/*  }*/}
-          {/*  activeStrokeWidth={40}*/}
-          {/*  title="Step Count"*/}
-          {/*  titleColor="#555"*/}
-          {/*  titleFontSize={30}*/}
-          {/*  titleStyle={{fontWeight: 'bold'}}*/}
-          {/*/>*/}
-          <RingProgress
-            radius={150}
-            strokeWidth={50}
-            progress={stepCount / STEPS_GOAL}
-          />
-          <View style={styles.values}>
-            <Value label="Steps" value={stepCount.toString()} />
-            {additionalInfo.distance && (
-              <Value label="Distance" value={`${additionalInfo.distance}`} />
-            )}
-            {additionalInfo.calories && (
-              <Value label="Calories" value={additionalInfo.calories} />
-            )}
-          </View>
+    <View style={styles.container}>
+      <View style={styles.datePicker}>
+        {/*<CircularProgress*/}
+        {/*  value={stepCount}*/}
+        {/*  maxValue={10000}*/}
+        {/*  valueSuffix="steps"*/}
+        {/*  progressValueFontSize={42}*/}
+        {/*  radius={165}*/}
+        {/*  activeStrokeColor="#cdd27e"*/}
+        {/*  inActiveStrokeColor="#4c6394"*/}
+        {/*  inActiveStrokeOpacity={0.5}*/}
+        {/*  inActiveStrokeWidth={40}*/}
+        {/*  subtitle={*/}
+        {/*    additionalInfo.calories === '0 kCal'*/}
+        {/*      ? ''*/}
+        {/*      : additionalInfo.calories*/}
+        {/*  }*/}
+        {/*  activeStrokeWidth={40}*/}
+        {/*  title="Step Count"*/}
+        {/*  titleColor="#555"*/}
+        {/*  titleFontSize={30}*/}
+        {/*  titleStyle={{fontWeight: 'bold'}}*/}
+        {/*/>*/}
+        {/*<RingProgress*/}
+        {/*  radius={150}*/}
+        {/*  strokeWidth={50}*/}
+        {/*  progress={stepCount / STEPS_GOAL}*/}
+        {/*/>*/}
+        <View style={styles.values}>
+          <Value label="Steps" value={stepCount.toString()} />
+          {additionalInfo.distance && (
+            <Value label="Distance" value={`${additionalInfo.distance}`} />
+          )}
+          {additionalInfo.calories && (
+            <Value label="Calories" value={additionalInfo.calories} />
+          )}
         </View>
-        <View style={styles.bGroup}>
-          <Button title="START" onPress={startStepCounter} />
-          <Button title="RESTART" onPress={forceUseAnotherSensor} />
-          <Button title="STOP" onPress={stopStepCounter} />
-        </View>
-        <LogCat triggered={loaded} />
       </View>
-    </ScrollView>
+      <View style={styles.bGroup}>
+        <Button title="START" onPress={startStepCounter} />
+        <Button title="RESTART" onPress={forceUseAnotherSensor} />
+        <Button title="STOP" onPress={stopStepCounter} />
+      </View>
+      <LogCat triggered={loaded} />
+    </View>
   );
 }
 
@@ -154,6 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     justifyContent: 'center',
     padding: 12,
+    gap: 10,
   },
   /** Styling the circular indicator. */
   indicator: {
@@ -162,10 +160,10 @@ const styles = StyleSheet.create({
   },
   /** Styling the button group. */
   bGroup: {
-    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     display: 'flex',
+    gap: 20,
     marginVertical: 8,
   },
   values: {

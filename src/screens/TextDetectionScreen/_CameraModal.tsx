@@ -1,12 +1,12 @@
 import React, {forwardRef, useEffect} from 'react';
-import {Alert, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Modal, Pressable, StyleSheet, Text} from 'react-native';
 import {
   Camera,
   useCameraDevice,
   useCameraPermission,
 } from 'react-native-vision-camera';
-import {SAFE_AREA_PADDING} from '../../utils/constant';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 type CameraModalProps = {
   modalVisible: boolean;
@@ -34,7 +34,7 @@ const CameraModal = forwardRef<Camera, CameraModalProps>(
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
         }}>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <Camera
             device={device!}
             isActive={modalVisible}
@@ -59,7 +59,7 @@ const CameraModal = forwardRef<Camera, CameraModalProps>(
             onPress={onDetect}>
             <Text style={styles.textStyle}>Detect Nutrition Facts</Text>
           </Pressable>
-        </View>
+        </SafeAreaView>
       </Modal>
     );
   },
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
   captureButton: {
     position: 'absolute',
     alignSelf: 'center',
-    bottom: SAFE_AREA_PADDING.paddingBottom,
   },
 });
 
